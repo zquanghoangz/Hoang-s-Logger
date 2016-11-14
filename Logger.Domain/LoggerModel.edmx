@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CrossoverModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="application">
+          <Key>
+            <PropertyRef Name="application_id" />
+          </Key>
+          <Property Name="application_id" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="display_name" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="secret" Type="varchar" MaxLength="64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="log">
+          <Key>
+            <PropertyRef Name="log_id" />
+          </Key>
+          <Property Name="log_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="logger" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="level" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="message" Type="varchar" MaxLength="2048" Nullable="false" />
+          <Property Name="application_id" Type="varchar" MaxLength="32" />
+        </EntityType>
+        <EntityType Name="setting">
+          <Key>
+            <PropertyRef Name="log_id" />
+          </Key>
+          <Property Name="log_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="setting_key" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="value" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__log__application__1273C1CD">
+          <End Role="application" Type="Self.application" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="log" Type="Self.log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="application">
+              <PropertyRef Name="application_id" />
+            </Principal>
+            <Dependent Role="log">
+              <PropertyRef Name="application_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CrossoverModelStoreContainer">
+          <EntitySet Name="application" EntityType="Self.application" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="log" EntityType="Self.log" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="setting" EntityType="Self.setting" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__log__application__1273C1CD" Association="Self.FK__log__application__1273C1CD">
+            <End Role="application" EntitySet="application" />
+            <End Role="log" EntitySet="log" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CrossoverModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Application">
+          <Key>
+            <PropertyRef Name="ApplicationId" />
+          </Key>
+          <Property Name="ApplicationId" Type="String" MaxLength="32" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DisplayName" Type="String" MaxLength="32" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Secret" Type="String" MaxLength="64" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Logs" Relationship="Self.FK__log__application__1273C1CD" FromRole="application" ToRole="log" />
+        </EntityType>
+        <EntityType Name="Log">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Logger" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Level" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Message" Type="String" MaxLength="2048" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ApplicationId" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Application" Relationship="Self.FK__log__application__1273C1CD" FromRole="log" ToRole="application" />
+        </EntityType>
+        <Association Name="FK__log__application__1273C1CD">
+          <End Role="application" Type="CrossoverModel.Application" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="log" Type="CrossoverModel.Log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="application">
+              <PropertyRef Name="ApplicationId" />
+            </Principal>
+            <Dependent Role="log">
+              <PropertyRef Name="ApplicationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CrossoverEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Applications1" EntityType="CrossoverModel.Application" />
+          <EntitySet Name="Logs1" EntityType="CrossoverModel.Log" />
+          <AssociationSet Name="FK__log__application__1273C1CD" Association="Self.FK__log__application__1273C1CD">
+            <End Role="application" EntitySet="Applications1" />
+            <End Role="log" EntitySet="Logs1" />
+          </AssociationSet>
+          <EntitySet Name="Settings1" EntityType="CrossoverModel.Setting" />
+        </EntityContainer>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SettingKey" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="Value" Type="Int32" Nullable="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CrossoverModelStoreContainer" CdmEntityContainer="CrossoverEntities">
+          <EntitySetMapping Name="Applications1">
+            <EntityTypeMapping TypeName="CrossoverModel.Application">
+              <MappingFragment StoreEntitySet="application">
+                <ScalarProperty Name="ApplicationId" ColumnName="application_id" />
+                <ScalarProperty Name="DisplayName" ColumnName="display_name" />
+                <ScalarProperty Name="Secret" ColumnName="secret" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Logs1">
+            <EntityTypeMapping TypeName="CrossoverModel.Log">
+              <MappingFragment StoreEntitySet="log">
+                <ScalarProperty Name="LogId" ColumnName="log_id" />
+                <ScalarProperty Name="Logger" ColumnName="logger" />
+                <ScalarProperty Name="Level" ColumnName="level" />
+                <ScalarProperty Name="Message" ColumnName="message" />
+                <ScalarProperty Name="ApplicationId" ColumnName="application_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Settings1">
+            <EntityTypeMapping TypeName="CrossoverModel.Setting">
+              <MappingFragment StoreEntitySet="setting">
+                <ScalarProperty Name="Value" ColumnName="value" />
+                <ScalarProperty Name="SettingKey" ColumnName="setting_key" />
+                <ScalarProperty Name="LogId" ColumnName="log_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
